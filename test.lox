@@ -1,7 +1,1 @@
-let x = 5.5;
-let name = "test";
-// comment test
-while (x < 55) {
-    (expression)
-}
-return
+(1+1)*9/10-5
