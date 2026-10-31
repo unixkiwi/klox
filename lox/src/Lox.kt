@@ -1,6 +1,8 @@
 class Lox {
     companion object {
+        private val interpreter = Interpreter()
         var hadError: Boolean = false
+        var hadRuntimeError: Boolean = false
 
         fun execute(source: String) {
             val scanner: Scanner = Scanner(source)
@@ -10,11 +12,13 @@ class Lox {
 
             if (hadError || expression == null) return
 
-            println(AstPrinter().print(expression))
+            interpreter.interpret(expression)
+
+            /*println(AstPrinter().print(expression))
 
             for (token in tokens) {
                 println(token)
-            }
+            }*/
         }
 
         fun error(line: Int, msg: String) {
@@ -32,6 +36,11 @@ class Lox {
             } else {
                 report(token.line, "at '" + token.lexeme + "'", message)
             }
+        }
+
+        fun runtimeError(error: RuntimeError) {
+            System.err.println("${error.message}\n[line ${error.token.line}]")
+            hadRuntimeError = true
         }
     }
 }

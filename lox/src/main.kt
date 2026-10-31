@@ -18,6 +18,7 @@ fun main(args: Array<String>) {
 
         Lox.execute(path.readText())
         if (Lox.hadError) exitProcess(65)
+        if (Lox.hadRuntimeError) exitProcess(70);
     } else {
         System.err.println("Usage: klox [script]")
         exitProcess(64)
