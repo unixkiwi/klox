@@ -1,0 +1,42 @@
+import java.io.PrintWriter
+import kotlin.system.exitProcess
+
+
+fun main(args: Array<String>) {
+    if (args.size != 1) {
+        System.err.println("Usage: generate_ast <output directory>");
+        exitProcess(64);
+    }
+
+    val outputDir = args[0];
+    defineAst(
+        outputDir, "Expr", listOf(
+            "Binary   | val left: Expr, val operator: Token, val right: Expr",
+            "Grouping | val expression: Expr",
+            "Literal  | val value: Any?",
+            "Unary    | val operator: Token, val right: Expr"
+        )
+    )
+}
+
+private fun defineAst(outputDir: String, baseName: String, types: List<String>) {
+    val path = "$outputDir/$baseName.kt"
+    val writer = PrintWriter(path, "UTF-8")
+
+    writer.println("internal abstract class $baseName {")
+
+    for (type in types) {
+        val className = type.split("|")[0].trim()
+        val fields = type.split("|")[1].trim()
+        defineType(writer, baseName, className, fields)
+    }
+
+    writer.println("}")
+    writer.close()
+}
+
+private fun defineType(writer: PrintWriter, baseName: String, className: String, fieldList: String) {
+    writer.println(
+        "  internal class $className($fieldList) : $baseName()"
+    )
+}
