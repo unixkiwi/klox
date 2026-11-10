@@ -8,11 +8,11 @@ class Lox {
             val scanner: Scanner = Scanner(source)
             val tokens: List<Token> = scanner.tokenize()
             val parser = Parser(tokens)
-            val expression = parser.parse()
+            val statements = parser.parse()
 
-            if (hadError || expression == null) return
+            if (hadError) return
 
-            interpreter.interpret(expression)
+            interpreter.interpret(statements)
 
             /*println(AstPrinter().print(expression))
 
