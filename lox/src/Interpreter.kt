@@ -1,6 +1,8 @@
 import TokenType.*
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
+    private val environment = Environment()
+
     override fun visitBinaryExpr(expr: Expr.Binary): Any? {
         val left = evaluate(expr.left)
         val right = evaluate(expr.right)
@@ -72,6 +74,10 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
         }
     }
 
+    override fun visitVariableExpr(expr: Expr.Variable): Any? {
+        return environment.get(expr.name)
+    }
+
     private fun checkNumberOperand(operator: Token, operand: Any?) {
         if (operand is Double) return
         throw RuntimeError(operator, "Operand must be a number!")
@@ -124,6 +130,14 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
     override fun visitPrintStmt(stmt: Stmt.Print): Void? {
         val value = evaluate(stmt.expression)
         println(stringify(value))
+        return null
+    }
+
+    override fun visitVarStmt(stmt: Stmt.Var): Void? {
+        var value: Any? = null
+        value = evaluate(stmt.initializer)
+
+        environment.define(stmt.name.lexeme, value)
         return null
     }
 

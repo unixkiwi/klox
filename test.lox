@@ -3,3 +3,7 @@ print ( 1 + 1 ) * 9 / 10-   5;
 print "Hello World!";
 
 print true;
+
+var test = "a";
+
+print test;
