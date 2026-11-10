@@ -1,3 +1,4 @@
+import Expr.Assign
 import TokenType.*
 
 
@@ -18,7 +19,7 @@ class Parser(val tokens: List<Token>) {
         return statements
     }
 
-    private fun expression(): Expr = equality()
+    private fun expression(): Expr = assignment()
 
     private fun declaration(): Stmt? {
         try {
@@ -33,6 +34,7 @@ class Parser(val tokens: List<Token>) {
 
     private fun statement(): Stmt {
         if (match(PRINT)) return printStatement()
+        if (match(LEFT_BRACE)) return Stmt.Block(block())
 
         return expressionStatement()
     }
@@ -60,6 +62,36 @@ class Parser(val tokens: List<Token>) {
         consume(SEMICOLON, "Expect ';' after expression.")
         return Stmt.Expression(expr)
     }
+
+    private fun block(): MutableList<Stmt?> {
+        val statements: MutableList<Stmt?> = mutableListOf()
+
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration())
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after block.")
+        return statements
+    }
+
+    private fun assignment(): Expr {
+        val expr = equality()
+
+        if (match(EQUAL)) {
+            val equals: Token = previous()
+            val value = assignment()
+
+            if (expr is Expr.Variable) {
+                val name = expr.name
+                return Assign(name, value)
+            }
+
+            error(equals, "Invalid assignment target.")
+        }
+
+        return expr
+    }
+
 
     private fun equality(): Expr {
         var expr = comparison()

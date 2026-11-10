@@ -7,3 +7,7 @@ print true;
 var test = "a";
 
 print test;
+
+test = 3;
+
+print test;

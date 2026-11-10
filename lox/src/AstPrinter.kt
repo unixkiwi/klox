@@ -1,4 +1,4 @@
-class AstPrinter : Expr.Visitor<String> {
+/*class AstPrinter : Expr.Visitor<String> {
     fun print(expr: Expr): String = expr.accept(this)
 
     override fun visitBinaryExpr(expr: Expr.Binary): String =
@@ -12,11 +12,6 @@ class AstPrinter : Expr.Visitor<String> {
     }
 
     override fun visitUnaryExpr(expr: Expr.Unary): String = parenthesize(expr.operator.lexeme, expr.right)
-
-    override fun visitVariableExpr(expr: Expr.Variable): String {
-        TODO("Not yet implemented")
-    }
-
 
     private fun parenthesize(name: String, vararg exprs: Expr): String {
         val builder = StringBuilder()
@@ -48,4 +43,4 @@ class AstPrinter : Expr.Visitor<String> {
             println(AstPrinter().print(expression))
         }
     }
-}
+}*/

@@ -1,7 +1,8 @@
+import Expr.Assign
 import TokenType.*
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
-    private val environment = Environment()
+    private var environment = Environment()
 
     override fun visitBinaryExpr(expr: Expr.Binary): Any? {
         val left = evaluate(expr.left)
@@ -122,6 +123,27 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
         stmt.accept(this)
     }
 
+    fun executeBlock(
+        statements: MutableList<Stmt?>,
+        environment: Environment?
+    ) {
+        val previous: Environment = this.environment
+        try {
+            this.environment = environment!!
+
+            for (statement in statements) {
+                execute(statement!!)
+            }
+        } finally {
+            this.environment = previous
+        }
+    }
+
+    override fun visitBlockStmt(stmt: Stmt.Block): Void? {
+        executeBlock(stmt.statements, Environment(environment))
+        return null
+    }
+
     override fun visitExpressionStmt(stmt: Stmt.Expression): Void? {
         evaluate(stmt.expression)
         return null
@@ -139,6 +161,12 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Void?> {
 
         environment.define(stmt.name.lexeme, value)
         return null
+    }
+
+    override fun visitAssignExpr(expr: Assign): Any? {
+        val value = evaluate(expr.value)
+        environment.assign(expr.name, value)
+        return value
     }
 
     fun interpret(statements: List<Stmt>) {

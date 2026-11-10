@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
     val outputDir = args[0];
     defineAst(
         outputDir, "Expr", listOf(
+            "Assign   | val name: Token, val value: Expr",
             "Binary   | val left: Expr, val operator: Token, val right: Expr",
             "Grouping | val expression: Expr",
             "Literal  | val value: Any?",
@@ -22,6 +23,7 @@ fun main(args: Array<String>) {
 
     defineAst(
         outputDir, "Stmt", listOf(
+            "Block      | val statements: MutableList<Stmt?>",
             "Expression | val expression: Expr",
             "Print      | val expression: Expr",
             "Var        | val name: Token, val initializer: Expr"
